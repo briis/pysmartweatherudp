@@ -6,10 +6,9 @@ import os
 import select
 import socket
 import sys
+import json
 import threading
 import time
-
-from . import utils
 
 from .constants import (
     DEFAULT_HOST,
@@ -18,12 +17,10 @@ from .constants import (
 
 
 class SWReceiver(threading.Thread):
-    """
-    Open a UDP socket to monitor for incoming IR-IP packets.
-    """
+    """ Open a UDP socket to monitor for incoming packets. """
 
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
-        """Construct a KIRA interface object."""
+        """Construct a Smart Weather interface object."""
         threading.Thread.__init__(self)
         self.stopped = threading.Event()
         self._callbacks = []
@@ -32,19 +29,13 @@ class SWReceiver(threading.Thread):
         self.host = host
         self.port = port
         self._socket.bind((host, port))
-        self.codeMap = {}
         self._state = 'idle'
-
-    def registerCode(self, codeName, code, codeType=None):
-        code = utils.mangleCode(code, codeType=codeType)
-        if code:
-            self.codeMap[code] = codeName
 
     def registerCallback(self, callback):
         self._callbacks.append(callback)
 
     def run(self):
-        """Main loop of KIRA thread."""
+        """Main loop of Smart Weather thread."""
         while not self.stopped.isSet():
             try:
                 # if the current state is idle, just block and wait forever
@@ -64,15 +55,9 @@ class SWReceiver(threading.Thread):
                     except socket.error:
                         break
                     continue
-                code = utils.mangleIR(data, ignore_errors=True)
-                codeName = self.codeMap.get(code)
-                # some manufacturers repeat their IR codes several times in rapid
-                # succession. by tracking the last code, we can eliminate redundant
-                # state changes
-                if codeName and (self._state != codeName):
-                    self._state = codeName
-                    for callback in self._callbacks:
-                        callback(codeName)
+                jsondata = json.loads(data)
+                for callback in self._callbacks:
+                    callback(jsondata)
             except:
                 time.sleep(0.1)
 
