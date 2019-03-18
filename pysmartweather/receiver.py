@@ -10,11 +10,12 @@ import json
 import threading
 import time
 
+from . import utils
+
 from .constants import (
     DEFAULT_HOST,
     DEFAULT_PORT
 )
-
 
 class SWReceiver(threading.Thread):
     """ Open a UDP socket to monitor for incoming packets. """
@@ -55,9 +56,15 @@ class SWReceiver(threading.Thread):
                     except socket.error:
                         break
                     continue
-                jsondata = json.loads(data)
-                for callback in self._callbacks:
-                    callback(jsondata)
+
+                ds = utils.getDataSet(data, ignore_errors=True)
+                if ds:
+                    TimeSpan = ds.timestamp
+                    if (self._state != TimeSpan):
+                        self._state = TimeSpan
+
+                        for callback in self._callbacks:
+                            callback(ds)
             except:
                 time.sleep(0.1)
 
