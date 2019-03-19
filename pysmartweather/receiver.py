@@ -9,6 +9,7 @@ import sys
 import json
 import threading
 import time
+import datetime
 
 from . import utils
 
@@ -32,13 +33,27 @@ class SWReceiver(threading.Thread):
         self._socket.bind((host, port))
         self._state = 'idle'
 
+        """ Variables to store last read state. """
+        # Air Data
+        self._pressure = 0
+        self._temperature = 0
+        self._humidity = 0
+        self._lightning_count = 0
+        self._lightning_distance = 0
+        self._airbattery = 0
+        # Sky Data
         self._precipitation = 0
         self._precipitation_rate = 0
-        self._temperature = 0
+        self._precipitation_date = datetime.datetime.today().strftime('%Y-%m-%d')
+        self._illuminance = 0
+        self._uv = 0
+        self._wind_lull = 0
+        self._wind_gust = 0
+        self._skybattery = 0
+        self._solar_radiation = 0
+        # Rapid Wind Data
         self._wind_bearing = 0
         self._wind_speed = 0
-        self._airbattery = 0
-        self._skybattery = 0
 
     def registerCallback(self, callback):
         self._callbacks.append(callback)
@@ -82,6 +97,10 @@ class SWReceiver(threading.Thread):
                     ds.airbattery = self._airbattery
                     self._skybattery = ds.skybattery
                     self._precipitation_rate = ds.precipitation_rate
+                    # Reset the Precipitation at Midnight
+                    if datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d') != self._precipitation_date:
+                        self._precipitation_date = datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d')
+                        self._precipitation = 0
                     self._precipitation = self._precipitation + ds.precipitation_rate
                 elif jsondata['type'] == 'obs_air':
                     ds.wind_bearing = self._wind_bearing
