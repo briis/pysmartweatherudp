@@ -32,6 +32,14 @@ class SWReceiver(threading.Thread):
         self._socket.bind((host, port))
         self._state = 'idle'
 
+        self._precipitation = 0
+        self._precipitation_rate = 0
+        self._temperature = 0
+        self._wind_bearing = 0
+        self._wind_speed = 0
+        self._airbattery = 0
+        self._skybattery = 0
+
     def registerCallback(self, callback):
         self._callbacks.append(callback)
 
@@ -58,13 +66,37 @@ class SWReceiver(threading.Thread):
                     continue
 
                 ds = utils.getDataSet(data, ignore_errors=True)
-                if ds:
-                    TimeSpan = ds.timestamp
-                    if (self._state != TimeSpan):
-                        self._state = TimeSpan
+                jsondata = json.loads(data)
+                if jsondata['type'] == 'rapid_wind':
+                    ds.precipitation = self._precipitation
+                    ds.precipitation_rate = self._precipitation_rate
+                    ds.temperature = self._temperature
+                    ds.airbattery = self._airbattery
+                    ds.skybattery = self._skybattery
+                    self._wind_bearing = ds.wind_bearing
+                    self._wind_speed = ds.wind_speed
+                elif jsondata['type'] == 'obs_sky':
+                    ds.temperature = self._temperature
+                    ds.wind_bearing = self._wind_bearing
+                    ds.wind_speed = self._wind_speed
+                    ds.airbattery = self._airbattery
+                    self._skybattery = ds.skybattery
+                    self._precipitation_rate = ds.precipitation_rate
+                    self._precipitation = self._precipitation + ds.precipitation_rate
+                elif jsondata['type'] == 'obs_air':
+                    ds.wind_bearing = self._wind_bearing
+                    ds.wind_speed = self._wind_speed
+                    ds.precipitation = self._precipitation
+                    ds.precipitation_rate = self._precipitation_rate
+                    ds.skybattery = self._skybattery
+                    self._airbattery = ds.airbattery
+                    self._temperature = ds.temperature
+                else:
+                    ds = None
 
-                        for callback in self._callbacks:
-                            callback(ds)
+                if ds:
+                    for callback in self._callbacks:
+                        callback(ds)
             except:
                 time.sleep(0.1)
 

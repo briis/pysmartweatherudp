@@ -18,7 +18,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='0.1.0',
 
-    description='Receive data from Smart Weather cia UDP',
+    description='Receive data from Smart Weather via UDP',
     long_description=" ".join(
         ["Lightweight Python 2 and Python 3 module to receive UDP packets",
         "from Smart Weather station from WeatherFlow."]),
@@ -28,7 +28,7 @@ setup(
 
     # Author details
     author='Bjarne Riis',
-    author_email='briis@users.noreply.github.com',
+    author_email='bjarne@briis.com',
 
     # Choose your license
     license='MIT',
@@ -60,7 +60,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='smartweather weatherflow ',
+    keywords='smartweather weatherflow home-assistant ',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -68,7 +68,7 @@ setup(
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
-    #py_modules=["pykira"],
+    #py_modules=["pysmartweather"],
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
