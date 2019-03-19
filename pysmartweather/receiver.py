@@ -15,13 +15,14 @@ from . import utils
 
 from .constants import (
     DEFAULT_HOST,
-    DEFAULT_PORT
+    DEFAULT_PORT,
+    DEFAULT_UNITS
 )
 
 class SWReceiver(threading.Thread):
     """ Open a UDP socket to monitor for incoming packets. """
 
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT, units=DEFAULT_UNITS):
         """Construct a Smart Weather interface object."""
         threading.Thread.__init__(self)
         self.stopped = threading.Event()
@@ -30,6 +31,7 @@ class SWReceiver(threading.Thread):
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.host = host
         self.port = port
+        self.units = units
         self._socket.bind((host, port))
         self._state = 'idle'
 
@@ -40,7 +42,10 @@ class SWReceiver(threading.Thread):
         self._humidity = 0
         self._lightning_count = 0
         self._lightning_distance = 0
+        self._lightning_time = None
         self._airbattery = 0
+        self._dewpoint = 0
+        self._wind_chill = 0
         # Sky Data
         self._precipitation = 0
         self._precipitation_rate = 0
@@ -54,6 +59,7 @@ class SWReceiver(threading.Thread):
         # Rapid Wind Data
         self._wind_bearing = 0
         self._wind_speed = 0
+        self._wind_direction = None
 
     def registerCallback(self, callback):
         self._callbacks.append(callback)
@@ -80,7 +86,7 @@ class SWReceiver(threading.Thread):
                         break
                     continue
 
-                ds = utils.getDataSet(data, ignore_errors=True)
+                ds = utils.getDataSet(data, self.units, ignore_errors=True)
                 jsondata = json.loads(data)
                 if jsondata['type'] == 'rapid_wind':
                     # AIR
@@ -89,7 +95,9 @@ class SWReceiver(threading.Thread):
                     ds.humidity = self._humidity
                     ds.lightning_count = self._lightning_count
                     ds.lightning_distance = self._lightning_distance
+                    ds.lightning_time = self._lightning_time
                     ds.airbattery = self._airbattery
+                    ds.dewpoint = self._dewpoint
                     # SKY
                     ds.illuminance = self._illuminance
                     ds.uv = self._uv
@@ -102,6 +110,10 @@ class SWReceiver(threading.Thread):
                     # RAPID WIND
                     self._wind_bearing = ds.wind_bearing
                     self._wind_speed = ds.wind_speed
+                    self._wind_direction = ds.wind_direction
+                    # Calculated Values
+                    self._wind_chill = utils.WeatherFunctions.getWindChill(ds.wind_speed, self._temperature)
+                    ds.wind_chill = self._wind_chill
                 elif jsondata['type'] == 'obs_sky':
                     # AIR
                     ds.pressure = self._pressure
@@ -109,10 +121,15 @@ class SWReceiver(threading.Thread):
                     ds.humidity = self._humidity
                     ds.lightning_count = self._lightning_count
                     ds.lightning_distance = self._lightning_distance
+                    ds.lightning_time = self._lightning_time
                     ds.airbattery = self._airbattery
+                    ds.dewpoint = self._dewpoint
                     # RAPID WIND
                     ds.wind_bearing = self._wind_bearing
                     ds.wind_speed = self._wind_speed
+                    ds.wind_direction = self._wind_direction
+                    # Calculated Values
+                    ds.wind_chill = self._wind_chill
                     # SKY
                     self._illuminance = ds.illuminance
                     self._uv = ds.uv
@@ -120,7 +137,7 @@ class SWReceiver(threading.Thread):
                     self._wind_gust = ds.wind_gust
                     self._solar_radiation = ds.solar_radiation
                     self._skybattery = ds.skybattery
-                    self._precipitation_rate = ds.precipitation_rate
+                    self._precipitation_rate = ds.precipitation_rate * 60
                     # Reset the Precipitation at Midnight
                     if datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d') != self._precipitation_date:
                         self._precipitation_date = datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d')
@@ -139,6 +156,7 @@ class SWReceiver(threading.Thread):
                     ds.precipitation = self._precipitation
                     ds.precipitation_rate = self._precipitation_rate
                     ds.skybattery = self._skybattery
+                    ds.wind_direction = self._wind_direction
                     # AIR
                     self._airbattery = ds.airbattery
                     self._temperature = ds.temperature
@@ -146,6 +164,11 @@ class SWReceiver(threading.Thread):
                     self._humidity = ds.humidity
                     self._lightning_count = ds.lightning_count
                     self._lightning_distance = ds.lightning_distance
+                    self._lightning_time = ds.lightning_time
+                    self._dewpoint = ds.dewpoint
+                    # Calculated Values
+                    self._wind_chill = utils.WeatherFunctions.getWindChill(self._wind_speed, ds.temperature)
+                    ds.wind_chill = self._wind_chill
                 else:
                     ds = None
 
