@@ -46,6 +46,8 @@ class SWReceiver(threading.Thread):
         self._airbattery = 0
         self._dewpoint = 0
         self._wind_chill = 0
+        self._heat_index = 0
+        self._feels_like = 0
         # Sky Data
         self._precipitation = 0
         self._precipitation_rate = 0
@@ -98,6 +100,7 @@ class SWReceiver(threading.Thread):
                     ds.lightning_time = self._lightning_time
                     ds.airbattery = self._airbattery
                     ds.dewpoint = self._dewpoint
+                    ds.heat_index = self._heat_index
                     # SKY
                     ds.illuminance = self._illuminance
                     ds.uv = self._uv
@@ -114,6 +117,8 @@ class SWReceiver(threading.Thread):
                     # Calculated Values
                     self._wind_chill = utils.WeatherFunctions.getWindChill(ds.wind_speed, self._temperature)
                     ds.wind_chill = self._wind_chill
+                    self._feels_like = utils.WeatherFunctions.getFeelsLike(self._temperature, self._wind_chill, self._heat_index)
+                    ds.feels_like = self._feels_like
                 elif jsondata['type'] == 'obs_sky':
                     # AIR
                     ds.pressure = self._pressure
@@ -124,12 +129,14 @@ class SWReceiver(threading.Thread):
                     ds.lightning_time = self._lightning_time
                     ds.airbattery = self._airbattery
                     ds.dewpoint = self._dewpoint
+                    ds.heat_index = self._heat_index
                     # RAPID WIND
                     ds.wind_bearing = self._wind_bearing
                     ds.wind_speed = self._wind_speed
                     ds.wind_direction = self._wind_direction
                     # Calculated Values
                     ds.wind_chill = self._wind_chill
+                    ds.feels_like = self._feels_like
                     # SKY
                     self._illuminance = ds.illuminance
                     self._uv = ds.uv
@@ -166,9 +173,12 @@ class SWReceiver(threading.Thread):
                     self._lightning_distance = ds.lightning_distance
                     self._lightning_time = ds.lightning_time
                     self._dewpoint = ds.dewpoint
+                    self._heat_index = ds.heat_index
                     # Calculated Values
                     self._wind_chill = utils.WeatherFunctions.getWindChill(self._wind_speed, ds.temperature)
                     ds.wind_chill = self._wind_chill
+                    self._feels_like = utils.WeatherFunctions.getFeelsLike(self._temperature, self._wind_chill, self._heat_index)
+                    ds.feels_like = self._feels_like
                 else:
                     ds = None
 
