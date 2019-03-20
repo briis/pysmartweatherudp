@@ -149,7 +149,7 @@ class SWReceiver(threading.Thread):
                     if datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d') != self._precipitation_date:
                         self._precipitation_date = datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d')
                         self._precipitation = 0
-                    self._precipitation = self._precipitation + ds.precipitation_rate
+                    self._precipitation = round((self._precipitation + ds.precipitation_rate),1)
                 elif jsondata['type'] == 'obs_air':
                     # RAPID WIND
                     ds.wind_bearing = self._wind_bearing
