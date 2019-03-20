@@ -127,10 +127,10 @@ class UnitConversion:
     def volume(value, unit):
         if unit.lower() == 'imperial':
             # Return value in
-            return round(value * 0.0393700787,2)
+            return value * 0.0393700787
         else:
             # Return value mm
-            return round(value,2)
+            return value
 
     def pressure(value, unit):
         if unit.lower() == 'imperial':
