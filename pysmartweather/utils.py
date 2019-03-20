@@ -164,4 +164,5 @@ class WeatherFunctions:
         if wind_speed < 1.3:
             return temperature
         else:
-            return round((12.1452 + 11.6222 * math.sqrt(wind_speed) - 1.16222 * wind_speed) * (33 - temperature),2)
+            windKmh = wind_speed * 3.6
+            return round(13.12 + (0.6215 * temperature) - (11.37 * math.pow(windKmh, 0.16)) + (0.3965 * temperature * math.pow(windKmh, 0.16)), 2)
