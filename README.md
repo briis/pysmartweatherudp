@@ -31,8 +31,11 @@ Default value: 50222
 Default value: Metric<br>
 
 **Data Class Definition**<br>
+* **timestamp** - Time of last update in EPOCH time
 * **temperature** - Current temperature. **Note:** As this module was designed to be used with Home Assistant, no Temperature conversion will take place, even if *units* are supplied when calling the module. Temperatures will always be Celcius.
-* **wind_chill** - How cold does it feel. Only used if temperature is below 10°C (50°F) and Wind Speed is above 1.3 m/s
+* **feels_like** - How the temperature Feels Like. A combination of Heat Index and Wind Chill
+* **heat_index** - A temperature measurement combining Humidity and temperature. How hot does it feel. Only used when temperature is above 26.67°C (80°F)
+* **wind_chill** - How cold does it feel. Only used if temperature is below 10°C (50°F)
 * **dewpoint** - Dewpoint. The atmospheric temperature (varying according to pressure and humidity) below which water droplets begin to condense and dew can form
 * **wind_speed** - Current Wind Speed
 * **wind_gust** - Highest Wind Speed in the last minute
