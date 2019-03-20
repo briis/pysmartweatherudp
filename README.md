@@ -31,7 +31,7 @@ Default value: 50222
 Default value: Metric<br>
 
 **Data Class Definition**<br>
-* **temperature** - Current temperature
+* **temperature** - Current temperature. **Note:** As this module was designed to be used with Home Assistant, no Temperature conversion will take place, even if *units* are supplied when calling the module. Temperatures will always be Celcius.
 * **wind_chill** - How cold does it feel. Only used if temperature is below 10°C (50°F) and Wind Speed is above 1.3 m/s
 * **dewpoint** - Dewpoint. The atmospheric temperature (varying according to pressure and humidity) below which water droplets begin to condense and dew can form
 * **wind_speed** - Current Wind Speed
