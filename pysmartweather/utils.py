@@ -207,7 +207,7 @@ class WeatherFunctions:
             ])
 
         # Return value in Celcius
-        return (HI - 32) * 5/9
+        return round((HI - 32) * 5/9, 1)
 
     def getFeelsLike(temperature, wind_chill, heat_index):
         """ Returns the Feels Like Temperature in Celcius """
