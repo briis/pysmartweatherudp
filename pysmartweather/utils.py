@@ -39,6 +39,7 @@ class RapidWind:
         self.lightning_time = None
         self.airbattery = 0
         self.dewpoint = 0
+        self.heat_index = 0
         # Sky Data
         self.illuminance = 0
         self.uv = 0
@@ -49,6 +50,7 @@ class RapidWind:
         self.solar_radiation = 0
         # Calculated Values
         self.wind_chill = 0
+        self.feels_like = 0
 
 class SkyOberservation:
     """ Returns the SKY Observation Dataset. """
@@ -72,12 +74,14 @@ class SkyOberservation:
         self.lightning_time = None
         self.airbattery = 0
         self.dewpoint = 0
+        self.heat_index = 0
         # Rapid Wind Data
         self.wind_speed = 0
         self.wind_bearing = 0
         self.wind_direction = None
         # Calculated Values
         self.wind_chill = 0
+        self.feels_like = 0
 
 class AirOberservation:
     """ Returns the AIR Observation Dataset. """
@@ -93,6 +97,7 @@ class AirOberservation:
         self.lightning_time = datetime.datetime.today().strftime('%Y-%m-%d') if data[4] > 0 else None
         self.airbattery = data[6]
         self.dewpoint = WeatherFunctions.getDewPoint(data[2], data[3])
+        self.heat_index = WeatherFunctions.getHeatIndex(data[2], data[3])
         # Sky Data
         self.illuminance = 0
         self.uv = 0
@@ -107,6 +112,7 @@ class AirOberservation:
         self.wind_direction = None
         # Calculated Values
         self.wind_chill = 0
+        self.feels_like = 0
 
 class UnitConversion:
     """
@@ -158,11 +164,56 @@ class UnitConversion:
 class WeatherFunctions:
     """ Weather Specific Math Functions. """
     def getDewPoint(temperature, humidity):
+        """ Returns Dew Point in Celcius """
         return round(243.04*(math.log(humidity/100)+((17.625*temperature)/(243.04+temperature)))/(17.625-math.log(humidity/100)-((17.625*temperature)/(243.04+temperature))),1)
 
     def getWindChill(wind_speed, temperature):
+        """ Returns Wind Chill in Celcius """
         if wind_speed < 1.3:
             return temperature
         else:
             windKmh = wind_speed * 3.6
             return round(13.12 + (0.6215 * temperature) - (11.37 * math.pow(windKmh, 0.16)) + (0.3965 * temperature * math.pow(windKmh, 0.16)), 2)
+
+    def getHeatIndex(temperature, humidity):
+        """ Returns Heat Index in Celcius """
+        T = temperature * 9/5 + 32 #Convert to Fahrenheit
+        RH = humidity
+        c1 = -42.379
+        c2 = 2.04901523
+        c3 = 10.14333127
+        c4 = -0.22475541
+        c5 = -6.83783e-3
+        c6 = -5.481717e-2
+        c7 = 1.22874e-3
+        c8 = 8.5282e-4
+        c9 = -1.99e-6
+
+        # try simplified formula first (used for HI < 80)
+        HI = 0.5 * (T + 61. + (T - 68.) * 1.2 + RH * 0.094)
+
+        if HI >= 80:
+            # use Rothfusz regression
+            HI = math.fsum([
+                c1,
+                c2 * T,
+                c3 * RH,
+                c4 * T * RH,
+                c5 * T**2,
+                c6 * RH**2,
+                c7 * T**2 * RH,
+                c8 * T * RH**2,
+                c9 * T**2 * RH**2,
+            ])
+
+        # Return value in Celcius
+        return (HI - 32) * 5/9
+
+    def getFeelsLike(temperature, wind_chill, heat_index):
+        """ Returns the Feels Like Temperature in Celcius """
+        if temperature > 26.666666667:
+            return heat_index
+        elif temperature < 10:
+            return wind_chill
+        else:
+            return temperature
