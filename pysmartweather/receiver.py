@@ -60,10 +60,10 @@ class SWReceiver(threading.Thread):
         self._wind_gust = 0
         self._skybattery = 0
         self._solar_radiation = 0
+        self._wind_direction = None
         # Rapid Wind Data
         self._wind_bearing_rapid = 0
         self._wind_speed_rapid = 0
-        self._wind_direction = None
 
     def registerCallback(self, callback):
         self._callbacks.append(callback)
@@ -114,10 +114,10 @@ class SWReceiver(threading.Thread):
                     ds.precipitation = self._precipitation
                     ds.precipitation_rate = self._precipitation_rate
                     ds.skybattery = self._skybattery
+                    ds.wind_direction = self._wind_direction
                     # RAPID WIND
                     self._wind_bearing_rapid = ds.wind_bearing_rapid
                     self._wind_speed_rapid = ds.wind_speed_rapid
-                    self._wind_direction = ds.wind_direction
                     # Calculated Values
                     self._wind_chill = utils.WeatherFunctions.getWindChill(self, ds.wind_speed, self._temperature)
                     ds.wind_chill = self._wind_chill
@@ -137,7 +137,6 @@ class SWReceiver(threading.Thread):
                     # RAPID WIND
                     ds.wind_bearing_rapid = self._wind_bearing_rapid
                     ds.wind_speed_rapid = self._wind_speed_rapid
-                    ds.wind_direction = self._wind_direction
                     # Calculated Values
                     ds.wind_chill = self._wind_chill
                     ds.feels_like = self._feels_like
@@ -148,6 +147,7 @@ class SWReceiver(threading.Thread):
                     self._wind_speed = ds.wind_speed
                     self._wind_lull = ds.wind_lull
                     self._wind_gust = ds.wind_gust
+                    self._wind_direction = ds.wind_direction
                     self._solar_radiation = ds.solar_radiation
                     self._skybattery = ds.skybattery
                     self._precipitation_rate = ds.precipitation_rate * 60
