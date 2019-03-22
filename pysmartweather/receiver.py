@@ -54,13 +54,15 @@ class SWReceiver(threading.Thread):
         self._precipitation_date = datetime.datetime.today().strftime('%Y-%m-%d')
         self._illuminance = 0
         self._uv = 0
+        self._wind_bearing = 0
+        self._wind_speed = 0
         self._wind_lull = 0
         self._wind_gust = 0
         self._skybattery = 0
         self._solar_radiation = 0
         # Rapid Wind Data
-        self._wind_bearing = 0
-        self._wind_speed = 0
+        self._wind_bearing_rapid = 0
+        self._wind_speed_rapid = 0
         self._wind_direction = None
 
     def registerCallback(self, callback):
@@ -104,6 +106,8 @@ class SWReceiver(threading.Thread):
                     # SKY
                     ds.illuminance = self._illuminance
                     ds.uv = self._uv
+                    ds.wind_bearing = self._wind_bearing
+                    ds.wind_speed = self._wind_speed
                     ds.wind_lull = self._wind_lull
                     ds.wind_gust = self._wind_gust
                     ds.solar_radiation = self._solar_radiation
@@ -111,8 +115,8 @@ class SWReceiver(threading.Thread):
                     ds.precipitation_rate = self._precipitation_rate
                     ds.skybattery = self._skybattery
                     # RAPID WIND
-                    self._wind_bearing = ds.wind_bearing
-                    self._wind_speed = ds.wind_speed
+                    self._wind_bearing_rapid = ds.wind_bearing_rapid
+                    self._wind_speed_rapid = ds.wind_speed_rapid
                     self._wind_direction = ds.wind_direction
                     # Calculated Values
                     self._wind_chill = utils.WeatherFunctions.getWindChill(self, ds.wind_speed, self._temperature)
@@ -131,8 +135,8 @@ class SWReceiver(threading.Thread):
                     ds.dewpoint = self._dewpoint
                     ds.heat_index = self._heat_index
                     # RAPID WIND
-                    ds.wind_bearing = self._wind_bearing
-                    ds.wind_speed = self._wind_speed
+                    ds.wind_bearing_rapid = self._wind_bearing_rapid
+                    ds.wind_speed_rapid = self._wind_speed_rapid
                     ds.wind_direction = self._wind_direction
                     # Calculated Values
                     ds.wind_chill = self._wind_chill
@@ -140,6 +144,8 @@ class SWReceiver(threading.Thread):
                     # SKY
                     self._illuminance = ds.illuminance
                     self._uv = ds.uv
+                    self._wind_bearing = ds.wind_bearing
+                    self._wind_speed = ds.wind_speed
                     self._wind_lull = ds.wind_lull
                     self._wind_gust = ds.wind_gust
                     self._solar_radiation = ds.solar_radiation
@@ -154,11 +160,13 @@ class SWReceiver(threading.Thread):
                     ds.precipitation = round(self._precipitation, 1)
                 elif jsondata['type'] == 'obs_air':
                     # RAPID WIND
-                    ds.wind_bearing = self._wind_bearing
-                    ds.wind_speed = self._wind_speed
+                    ds.wind_bearing_rapid = self._wind_bearing_rapid
+                    ds.wind_speed_rapid = self._wind_speed_rapid
                     # SKY
                     ds.illuminance = self._illuminance
                     ds.uv = self._uv
+                    ds.wind_bearing = self._wind_bearing
+                    ds.wind_speed = self._wind_speed
                     ds.wind_lull = self._wind_lull
                     ds.wind_gust = self._wind_gust
                     ds.solar_radiation = self._solar_radiation
