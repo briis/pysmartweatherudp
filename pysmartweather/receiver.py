@@ -115,9 +115,9 @@ class SWReceiver(threading.Thread):
                     self._wind_speed = ds.wind_speed
                     self._wind_direction = ds.wind_direction
                     # Calculated Values
-                    self._wind_chill = utils.WeatherFunctions.getWindChill(ds.wind_speed, self._temperature)
+                    self._wind_chill = utils.WeatherFunctions.getWindChill(self, ds.wind_speed, self._temperature)
                     ds.wind_chill = self._wind_chill
-                    self._feels_like = utils.WeatherFunctions.getFeelsLike(self._temperature, self._wind_chill, self._heat_index)
+                    self._feels_like = utils.WeatherFunctions.getFeelsLike(self, self._temperature, self._wind_chill, self._heat_index)
                     ds.feels_like = self._feels_like
                 elif jsondata['type'] == 'obs_sky':
                     # AIR
@@ -177,9 +177,9 @@ class SWReceiver(threading.Thread):
                     self._dewpoint = ds.dewpoint
                     self._heat_index = ds.heat_index
                     # Calculated Values
-                    self._wind_chill = utils.WeatherFunctions.getWindChill(self._wind_speed, ds.temperature)
+                    self._wind_chill = utils.WeatherFunctions.getWindChill(self, self._wind_speed, ds.temperature)
                     ds.wind_chill = self._wind_chill
-                    self._feels_like = utils.WeatherFunctions.getFeelsLike(self._temperature, self._wind_chill, self._heat_index)
+                    self._feels_like = utils.WeatherFunctions.getFeelsLike(self, self._temperature, self._wind_chill, self._heat_index)
                     ds.feels_like = self._feels_like
                 else:
                     ds = None
