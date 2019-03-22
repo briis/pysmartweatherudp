@@ -1,6 +1,5 @@
-"""
-Interface to receive UDP packages from a Smart Weather station.
-"""
+""" Interface to receive UDP packages from a Smart Weather station. """
+
 # pylint: disable=import-error
 import os
 import select
