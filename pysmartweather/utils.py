@@ -27,9 +27,8 @@ class RapidWind:
         # Rapid Wind Data
         self.type = 'rapid_wind'
         self.timestamp = data[0]
-        self.wind_speed = UnitConversion.speed(self, data[1], units)
-        self.wind_bearing = data[2]
-        self.wind_direction = UnitConversion.wind_direction(self, data[2])
+        self.wind_speed_rapid = UnitConversion.speed(self, data[1], units)
+        self.wind_bearing_rapid = data[2]
         # Air Data
         self.pressure = 0
         self.temperature = 0
@@ -44,10 +43,13 @@ class RapidWind:
         self.illuminance = 0
         self.uv = 0
         self.precipitation_rate = 0
+        self.wind_speed = 0
+        self.wind_bearing = 0
         self.wind_lull = 0
         self.wind_gust = 0
         self.skybattery = 0
         self.solar_radiation = 0
+        self.wind_direction = None
         # Calculated Values
         self.wind_chill = 0
         self.feels_like = 0
@@ -61,10 +63,13 @@ class SkyOberservation:
         self.illuminance = data[1]
         self.uv = data[2]
         self.precipitation_rate = UnitConversion.volume(self, data[3], units)
+        self.wind_speed = UnitConversion.speed(self, data[5], units)
+        self.wind_bearing = data[7]
         self.wind_lull = UnitConversion.speed(self, data[4], units)
         self.wind_gust = UnitConversion.speed(self, data[6], units)
         self.skybattery = data[8]
         self.solar_radiation = data[10]
+        self.wind_direction = UnitConversion.wind_direction(self, data[7])
         # Air Data
         self.pressure = 0
         self.temperature = 0
@@ -76,9 +81,8 @@ class SkyOberservation:
         self.dewpoint = 0
         self.heat_index = 0
         # Rapid Wind Data
-        self.wind_speed = 0
-        self.wind_bearing = 0
-        self.wind_direction = None
+        self.wind_speed_rapid = 0
+        self.wind_bearing_rapid = 0
         # Calculated Values
         self.wind_chill = 0
         self.feels_like = 0
@@ -102,14 +106,16 @@ class AirOberservation:
         self.illuminance = 0
         self.uv = 0
         self.precipitation_rate = 0
+        self.wind_speed = 0
+        self.wind_bearing = 0
         self.wind_lull = 0
         self.wind_gust = 0
         self.skybattery = 0
         self.solar_radiation = 0
-        # Rapid Wind Data
-        self.wind_speed = 0
-        self.wind_bearing = 0
         self.wind_direction = None
+        # Rapid Wind Data
+        self.wind_speed_rapid = 0
+        self.wind_bearing_rapid = 0
         # Calculated Values
         self.wind_chill = 0
         self.feels_like = 0
