@@ -39,10 +39,12 @@ Default value: Metric<br>
 * **heat_index** - A temperature measurement combining Humidity and temperature. How hot does it feel. Only used when temperature is above 26.67°C (80°F)
 * **wind_chill** - How cold does it feel. Only used if temperature is below 10°C (50°F)
 * **dewpoint** - Dewpoint. The atmospheric temperature (varying according to pressure and humidity) below which water droplets begin to condense and dew can form
-* **wind_speed** - Current Wind Speed
+* **wind_speed** - Average Wind Speed for the last minute
+* **wind_speed_rapid** - Current Wind Speed
 * **wind_gust** - Highest Wind Speed in the last minute
 * **wind_lull** - Lowest Wind Speed in the last minute
-* **wind_bearing** - Wind bearing in degrees (Example: 287°)
+* **wind_bearing** - Average Wind bearing in degrees for the last minute (Example: 287°)
+* **wind_bearing_rapid** - Current Wind bearing in degrees (Example: 287°)
 * **wind_direction** - Wind bearing as directional text (Example: NNW)
 * **precipitation** - Precipitation since midnight. Due to the nature of the UDP data, this number is calculated in memory. So if the module is restarted, the counter goes back to midnight. Unfortunately it is not possible to catch up the data after a restart
 * **precipitation_rate** - The current precipitation rate - 0 if it is not raining
