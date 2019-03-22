@@ -27,9 +27,9 @@ class RapidWind:
         # Rapid Wind Data
         self.type = 'rapid_wind'
         self.timestamp = data[0]
-        self.wind_speed = UnitConversion.speed(data[1], units)
+        self.wind_speed = UnitConversion.speed(self, data[1], units)
         self.wind_bearing = data[2]
-        self.wind_direction = UnitConversion.wind_direction(data[2])
+        self.wind_direction = UnitConversion.wind_direction(self, data[2])
         # Air Data
         self.pressure = 0
         self.temperature = 0
@@ -60,9 +60,9 @@ class SkyOberservation:
         self.timestamp = data[0]
         self.illuminance = data[1]
         self.uv = data[2]
-        self.precipitation_rate = UnitConversion.volume(data[3], units)
-        self.wind_lull = UnitConversion.speed(data[4], units)
-        self.wind_gust = UnitConversion.speed(data[6], units)
+        self.precipitation_rate = UnitConversion.volume(self, data[3], units)
+        self.wind_lull = UnitConversion.speed(self, data[4], units)
+        self.wind_gust = UnitConversion.speed(self, data[6], units)
         self.skybattery = data[8]
         self.solar_radiation = data[10]
         # Air Data
@@ -89,15 +89,15 @@ class AirOberservation:
         # Air Data
         self.type = 'air'
         self.timestamp = data[0]
-        self.pressure = UnitConversion.pressure(data[1], units)
+        self.pressure = UnitConversion.pressure(self, data[1], units)
         self.temperature = data[2]
         self.humidity = data[3]
         self.lightning_count = data[4]
-        self.lightning_distance = UnitConversion.distance(data[5], units)
+        self.lightning_distance = UnitConversion.distance(self, data[5], units)
         self.lightning_time = datetime.datetime.today().strftime('%Y-%m-%d') if data[4] > 0 else None
         self.airbattery = data[6]
-        self.dewpoint = WeatherFunctions.getDewPoint(data[2], data[3])
-        self.heat_index = WeatherFunctions.getHeatIndex(data[2], data[3])
+        self.dewpoint = WeatherFunctions.getDewPoint(self, data[2], data[3])
+        self.heat_index = WeatherFunctions.getHeatIndex(self, data[2], data[3])
         # Sky Data
         self.illuminance = 0
         self.uv = 0
@@ -124,15 +124,15 @@ class UnitConversion:
     Pressure: mb
     Distance: km
     """
-    def volume(value, unit):
+    def volume(self, value, unit):
         if unit.lower() == 'imperial':
             # Return value in
-            return round(value * 0.0393700787,2)
+            return value * 0.0393700787
         else:
             # Return value mm
-            return round(value,1)
+            return value
 
-    def pressure(value, unit):
+    def pressure(self, value, unit):
         if unit.lower() == 'imperial':
             # Return value inHg
             return round(value * 0.0295299801647,3)
@@ -140,7 +140,7 @@ class UnitConversion:
             # Return value mb
             return round(value,1)
 
-    def speed(value, unit):
+    def speed(self, value, unit):
         if unit.lower() == 'imperial':
             # Return value in mi/h
             return round(value*2.2369362921,1)
@@ -148,7 +148,7 @@ class UnitConversion:
             # Return value in m/s
             return round(value,1)
 
-    def distance(value, unit):
+    def distance(self, value, unit):
         if unit.lower() == 'imperial':
             # Return value in mi
             return round(value*0.621371192,1)
@@ -156,18 +156,18 @@ class UnitConversion:
             # Return value in m/s
             return round(value,0)
 
-    def wind_direction(bearing):
+    def wind_direction(self, bearing):
         direction_array = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N']
         direction = direction_array[int((bearing + 11.25) / 22.5)]
         return direction
 
 class WeatherFunctions:
     """ Weather Specific Math Functions. """
-    def getDewPoint(temperature, humidity):
+    def getDewPoint(self, temperature, humidity):
         """ Returns Dew Point in Celcius """
         return round(243.04*(math.log(humidity/100)+((17.625*temperature)/(243.04+temperature)))/(17.625-math.log(humidity/100)-((17.625*temperature)/(243.04+temperature))),1)
 
-    def getWindChill(wind_speed, temperature):
+    def getWindChill(self, wind_speed, temperature):
         """ Returns Wind Chill in Celcius """
         if wind_speed < 1.3:
             return temperature
@@ -175,7 +175,7 @@ class WeatherFunctions:
             windKmh = wind_speed * 3.6
             return round(13.12 + (0.6215 * temperature) - (11.37 * math.pow(windKmh, 0.16)) + (0.3965 * temperature * math.pow(windKmh, 0.16)), 2)
 
-    def getHeatIndex(temperature, humidity):
+    def getHeatIndex(self, temperature, humidity):
         """ Returns Heat Index in Celcius """
         T = temperature * 9/5 + 32 #Convert to Fahrenheit
         RH = humidity
@@ -209,7 +209,7 @@ class WeatherFunctions:
         # Return value in Celcius
         return round((HI - 32) * 5/9, 1)
 
-    def getFeelsLike(temperature, wind_chill, heat_index):
+    def getFeelsLike(self, temperature, wind_chill, heat_index):
         """ Returns the Feels Like Temperature in Celcius """
         if temperature > 26.666666667:
             return heat_index
