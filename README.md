@@ -1,4 +1,4 @@
-# pySmartWeather
+# pySmartWeather-udp
 Python 2 and 3 module to interact via UDP with a Smart Weather station from WeatherFlow
 
 ![GitHub release](https://img.shields.io/github/release/briis/pysmartweather.svg)
