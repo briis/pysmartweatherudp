@@ -21,7 +21,7 @@ setup(
     description='Receive data from Smart Weather via UDP',
     long_description=" ".join(
         ["Lightweight Python 2 and Python 3 module to receive UDP packets",
-        "from Smart Weather station from WeatherFlow."]),
+        "from Smart Home Weather station from WeatherFlow."]),
 
     # The project's main homepage.
     url='https://github.com/briis/pysmartweatherudp',
