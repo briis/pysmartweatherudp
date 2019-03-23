@@ -34,7 +34,7 @@ Default value: Metric<br>
 
 **Data Class Definition**<br>
 * **timestamp** - Time of last update in EPOCH time
-* **temperature** - Current temperature. **Note:** As this module was designed to be used with Home Assistant, no Temperature conversion will take place, even if *units* are supplied when calling the module. Temperatures will always be Celcius.
+* **temperature** - Current temperature. **Note:** As this module was designed to be used with Home Assistant, no Temperature conversion will take place, even if *units* are supplied when calling the module. Temperatures will always be Celsius.
 * **feels_like** - How the temperature Feels Like. A combination of Heat Index and Wind Chill
 * **heat_index** - A temperature measurement combining Humidity and temperature. How hot does it feel. Only used when temperature is above 26.67°C (80°F)
 * **wind_chill** - How cold does it feel. Only used if temperature is below 10°C (50°F)
