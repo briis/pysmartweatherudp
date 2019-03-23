@@ -1,7 +1,7 @@
 """A setuptools based setup module.
 
 See:
-https://github.com/briis/pysmartweather-udp
+https://github.com/briis/pysmartweatherudp
 """
 
 # Always prefer setuptools over distutils
@@ -11,7 +11,7 @@ from codecs import open
 import os
 
 setup(
-    name='pysmartweather-udp',
+    name='pysmartweatherudp',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -24,7 +24,7 @@ setup(
         "from Smart Weather station from WeatherFlow."]),
 
     # The project's main homepage.
-    url='https://github.com/briis/pysmartweather-udp',
+    url='https://github.com/briis/pysmartweatherudp',
 
     # Author details
     author='Bjarne Riis',
@@ -68,7 +68,7 @@ setup(
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
-    #py_modules=["pysmartweather-udp"],
+    #py_modules=["pysmartweatherudp"],
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's

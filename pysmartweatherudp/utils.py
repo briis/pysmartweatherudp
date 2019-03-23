@@ -1,4 +1,4 @@
-""" Utility Functions used with pysmartweather-udp. """
+""" Utility Functions used with pysmartweatherudp. """
 import datetime
 import json
 import math

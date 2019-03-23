@@ -1,4 +1,4 @@
 """ Python module to interact with a Smart Weather Station via UDP. """
-name="pysmartweather-udp"
+name="pysmartweatherudp"
 
 from .receiver import SWReceiver
