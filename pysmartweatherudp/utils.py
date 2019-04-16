@@ -94,7 +94,7 @@ class AirOberservation:
         self.type = 'air'
         self.timestamp = data[0]
         self.pressure = UnitConversion.pressure(self, data[1], units)
-        self.temperature = data[2]
+        self.temperature = round(data[2],1)
         self.humidity = data[3]
         self.lightning_count = data[4]
         self.lightning_distance = UnitConversion.distance(self, data[5], units)
@@ -176,10 +176,10 @@ class WeatherFunctions:
     def getWindChill(self, wind_speed, temperature):
         """ Returns Wind Chill in Celcius """
         if wind_speed < 1.3:
-            return temperature
+            return round(temperature,1)
         else:
             windKmh = wind_speed * 3.6
-            return round(13.12 + (0.6215 * temperature) - (11.37 * math.pow(windKmh, 0.16)) + (0.3965 * temperature * math.pow(windKmh, 0.16)), 2)
+            return round(13.12 + (0.6215 * temperature) - (11.37 * math.pow(windKmh, 0.16)) + (0.3965 * temperature * math.pow(windKmh, 0.16)), 1)
 
     def getHeatIndex(self, temperature, humidity):
         """ Returns Heat Index in Celcius """
@@ -222,4 +222,4 @@ class WeatherFunctions:
         elif temperature < 10:
             return wind_chill
         else:
-            return temperature
+            return round(temperature,1)
