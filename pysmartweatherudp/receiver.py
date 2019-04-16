@@ -49,7 +49,9 @@ class SWReceiver(threading.Thread):
         self._feels_like = 0
         # Sky Data
         self._precipitation = 0
+        self._precipitation_raw = 0
         self._precipitation_rate = 0
+        self._precipitation_rate_raw = 0
         self._precipitation_date = datetime.datetime.today().strftime('%Y-%m-%d')
         self._illuminance = 0
         self._uv = 0
@@ -149,14 +151,15 @@ class SWReceiver(threading.Thread):
                     self._wind_direction = ds.wind_direction
                     self._solar_radiation = ds.solar_radiation
                     self._skybattery = ds.skybattery
-                    self._precipitation_rate = ds.precipitation_rate * 60
-                    ds.precipitation_rate = round(self._precipitation_rate, 2)
+                    self._precipitation_rate_raw = ds.precipitation_rate
+                    self._precipitation_rate = round(self._precipitation_rate_raw * 60,2)
                     # Reset the Precipitation at Midnight
                     if datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d') != self._precipitation_date:
                         self._precipitation_date = datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d')
                         self._precipitation = 0
-                    self._precipitation = self._precipitation + ds.precipitation_rate
-                    ds.precipitation = round(self._precipitation, 1)
+                        self._precipitation_raw =0
+                    self._precipitation_raw = self._precipitation_raw + self._precipitation_rate_raw
+                    self._precipitation = round(self._precipitation_raw,1)
                 elif jsondata['type'] == 'obs_air':
                     # RAPID WIND
                     ds.wind_bearing_rapid = self._wind_bearing_rapid
