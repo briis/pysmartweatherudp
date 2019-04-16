@@ -54,4 +54,6 @@ Default value: Metric<br>
 * **solar_radiation** - The current Solar Radiation measured in W/m2
 * **illuminance** - Shows the brightness in Lux
 * **lightning_count** - Shows the numbers of lightning strikes for last minute.
+* **airbattery** - The current voltage of the AIR unit
+* **skybattery** - The current voltage of the SKY unit
 <hr>
