@@ -28,6 +28,7 @@ class SWReceiver(threading.Thread):
         self._callbacks = []
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._socket.setblocking(False)
         self.host = host
         self.port = port
         self.units = units
