@@ -3,10 +3,12 @@ Python 2 and 3 module to interact via UDP with a Smart Weather station from Weat
 
 ![GitHub release](https://img.shields.io/github/release/briis/pysmartweatherudp.svg)
 
-This module communicates with a Smart Home Weather station from the company [WeatherFlow](http://weatherflow.com/smart-home-weather-stations/) using the UDP API. It retrieves current weather data from the attached units. Currently there are two types of Units:
+This module communicates with a Smart Home Weather station from the company [WeatherFlow](http://weatherflow.com/smart-home-weather-stations/) using the UDP API. It retrieves current weather data from the attached units. Currently there are three types of Units:
 * **AIR** - This unit measures Temperature, Humidity, Pressure and Lightning Strikes
 * **SKY** - This unit measures Precipitation, Wind, Illuminance and UV
-<br>They are both attached to a central hub, that broadcasts the data via UDP and sends the data to a cloud database managed by WeatherFlow. This module retrieves the data by listening to the UDP broadcast on the local network.
+* **Tempest** - This unit combines the air and sky units into a single device.  
+
+They are all attached to a central hub, that broadcasts the data via UDP and sends the data to a cloud database managed by WeatherFlow. This module retrieves the data by listening to the UDP broadcast on the local network.
 
 There are several broadcasts being sent depending on the station.  This module processes four of the broadcasts:
 
