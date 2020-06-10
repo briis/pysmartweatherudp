@@ -15,11 +15,46 @@ def getDataSet(data, units, ignore_errors=False):
             return SkyOberservation(jsondata['obs'][0], units)
         elif jsondata['type'] == 'obs_air':
             return AirOberservation(jsondata['obs'][0], units)
+        elif jsondata['type'] == 'obs_st':
+            return StObservation(jsondata['obs'][0], units)
         else:
             return None
     except:
         if not ignore_errors:
             raise
+
+class StObservation:
+    """ Return the Combined Station data Structure. """
+    def __init__(self, data, units):
+        # Rapid Wind Data
+        self.type = 'st'
+        self.timestamp = data[0]
+        self.illuminance = data[9]
+        self.uv = data[10]
+        self.precipitation_rate = UnitConversion.volume(self, data[12], units)
+        self.wind_speed = UnitConversion.speed(self, data[2], units)
+        self.wind_bearing = data[4]
+        self.wind_lull = UnitConversion.speed(self, data[1], units)
+        self.wind_gust = UnitConversion.speed(self, data[2], units)
+        self.skybattery = data[16]
+        self.solar_radiation = data[11]
+        self.wind_direction = UnitConversion.wind_direction(self, data[4])
+        # Air Data
+        self.pressure = UnitConversion.pressure(self, data[6], units)
+        self.temperature = round(data[7],1)
+        self.humidity = data[8]
+        self.lightning_count = data[15]
+        self.lightning_distance = UnitConversion.distance(self, data[14], units)
+        self.lightning_time = datetime.datetime.today().strftime('%Y-%m-%d') if data[15] > 0 else None
+        self.airbattery = data[16]
+        self.dewpoint = WeatherFunctions.getDewPoint(self, data[7], data[8])
+        self.heat_index = WeatherFunctions.getHeatIndex(self, data[7], data[8])
+        # Rapid Wind Data
+        self.wind_speed_rapid = 0
+        self.wind_bearing_rapid = 0
+        # Calculated Values
+        self.wind_chill = 0
+        self.feels_like = 0
 
 class RapidWind:
     """ Return the Rapid Wind data Structure. """
@@ -119,7 +154,7 @@ class AirOberservation:
         # Calculated Values
         self.wind_chill = 0
         self.feels_like = 0
-
+        
 class UnitConversion:
     """
     Conversion Class to convert between different units.

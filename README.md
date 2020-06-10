@@ -3,15 +3,20 @@ Python 2 and 3 module to interact via UDP with a Smart Weather station from Weat
 
 ![GitHub release](https://img.shields.io/github/release/briis/pysmartweatherudp.svg)
 
-This module communicates with a Smart Home Weather station from the company [WeatherFlow](http://weatherflow.com/smart-home-weather-stations/) using the UDP API. It retrieves current weather data from the attached units. Currently there are two types of Units:
+This module communicates with a Smart Home Weather station from the company [WeatherFlow](http://weatherflow.com/smart-home-weather-stations/) using the UDP API. It retrieves current weather data from the attached units. Currently there are three types of Units:
 * **AIR** - This unit measures Temperature, Humidity, Pressure and Lightning Strikes
 * **SKY** - This unit measures Precipitation, Wind, Illuminance and UV
-They are both attached to a central hub, that broadcasts the data via UDP and sends the data to a cloud database managed by WeatherFlow. This module retrieves the data by listening to the UDP broadcast on the local network.
+* **Tempest** - This unit combines the air and sky units into a single device.  
 
-There are several broadcasts being send by the system, and currently this module only uses three of them:
+They are all attached to a central hub, that broadcasts the data via UDP and sends the data to a cloud database managed by WeatherFlow. This module retrieves the data by listening to the UDP broadcast on the local network.
+
+There are several broadcasts being sent depending on the station.  This module processes four of the broadcasts:
+
 * *rapid_wind* - This contains current wind speed and bearing, and is updated every 3 seconds
-* *air_obs* - Here we get Temperature, Humidity, Pressure and Lightning Strikes. This sends out data every minute
-* *sky_obs* - This is where we get Precipitation, Wind, Illuminance and UV. Also broadcasts every minute.
+* *obs_air* - Here we get Temperature, Humidity, Pressure and Lightning Strikes. This sends out data every minute
+* *obs_sky* - This is where we get Precipitation, Wind, Illuminance and UV. Also broadcasts every minute.
+* *obs_st*  - This is for the new Tempest all in one weather station and combines the air/sky data into a single message sent out every minute.<br>
+Note: The Tempest unit will return the battery voltage in both the skybattery and airbattery sensors. 
 
 The function is built specifically to be used with [Home Assistant](https://www.home-assistant.io/), so data is formatted to suit that. But it might easily be modified for other purposes.
 
