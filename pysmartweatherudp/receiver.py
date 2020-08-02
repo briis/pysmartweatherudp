@@ -208,6 +208,13 @@ class SWReceiver(threading.Thread):
                     self._skybattery = ds.skybattery
                     self._precipitation_rate_raw = ds.precipitation_rate
                     self._precipitation_rate = round(self._precipitation_rate_raw * 60,2)
+                    # Reset the Precipitation at Midnight
+                    if datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d') != self._precipitation_date:
+                        self._precipitation_date = datetime.datetime.fromtimestamp(ds.timestamp).strftime('%Y-%m-%d')
+                        self._precipitation = 0
+                        self._precipitation_raw = 0
+                    self._precipitation_raw = self._precipitation_raw + self._precipitation_rate_raw
+                    self._precipitation = round(self._precipitation_raw,1)
                     # AIR
                     self._airbattery = ds.airbattery
                     self._temperature = ds.temperature
