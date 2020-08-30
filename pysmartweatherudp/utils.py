@@ -35,7 +35,7 @@ class StObservation:
         self.wind_speed = UnitConversion.speed(self, data[2], units)
         self.wind_bearing = data[4]
         self.wind_lull = UnitConversion.speed(self, data[1], units)
-        self.wind_gust = UnitConversion.speed(self, data[2], units)
+        self.wind_gust = UnitConversion.speed(self, data[3], units)
         self.skybattery = data[16]
         self.solar_radiation = data[11]
         self.wind_direction = UnitConversion.wind_direction(self, data[4])
