@@ -53,6 +53,7 @@ Default value: Metric<br>
 * **wind_direction** - Wind bearing as directional text (Example: NNW)
 * **precipitation** - Precipitation since midnight. Due to the nature of the UDP data, this number is calculated in memory. So if the module is restarted, the counter goes back to 0. Unfortunately it is not possible to catch up the data after a restart
 * **precipitation_rate** - The current precipitation rate - 0 if it is not raining
+* **precipitation_type** - Type of precipitation: 'rain', 'hail', or None.
 * **humidity** - Current humidity in %
 * **pressure** - Current barometric pressure, taking in to account the position of the station
 * **uv** - The UV index
