@@ -21,14 +21,16 @@ from .constants import (
 class SWReceiver(threading.Thread):
     """ Open a UDP socket to monitor for incoming packets. """
 
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT, units=DEFAULT_UNITS):
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT, units=DEFAULT_UNITS, is_ignore_errors=True):
         """Construct a Smart Weather interface object."""
         threading.Thread.__init__(self)
         self.stopped = threading.Event()
         self._callbacks = []
+        self._event_callbacks = []
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._socket.setblocking(False)
+        self._is_ignore_errors = is_ignore_errors
         self.host = host
         self.port = port
         self.units = units
@@ -70,6 +72,9 @@ class SWReceiver(threading.Thread):
     def registerCallback(self, callback):
         self._callbacks.append(callback)
 
+    def registerEventCallback(self, callback):
+        self._event_callbacks.append(callback)
+
     def run(self):
         """Main loop of Smart Weather thread."""
         while not self.stopped.isSet():
@@ -92,7 +97,7 @@ class SWReceiver(threading.Thread):
                         break
                     continue
 
-                ds = utils.getDataSet(data, self.units, ignore_errors=True)
+                ds = utils.getDataSet(data, self.units, ignore_errors=self._is_ignore_errors)
                 jsondata = json.loads(data)
                 if jsondata['type'] == 'rapid_wind':
                     # AIR
@@ -227,9 +232,15 @@ class SWReceiver(threading.Thread):
                     ds = None
 
                 if ds:
-                    for callback in self._callbacks:
-                        callback(ds)
+                    if hasattr(ds, 'event'):
+                        for callback in self._event_callbacks:
+                            callback(ds)
+                    else:
+                        for callback in self._callbacks:
+                            callback(ds)
             except:
+                if not self._is_ignore_errors:
+                    raise
                 time.sleep(0.1)
 
     def stop(self):

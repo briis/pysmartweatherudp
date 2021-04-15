@@ -10,13 +10,15 @@ This module communicates with a Smart Home Weather station from the company [Wea
 
 They are all attached to a central hub, that broadcasts the data via UDP and sends the data to a cloud database managed by WeatherFlow. This module retrieves the data by listening to the UDP broadcast on the local network.
 
-There are several broadcasts being sent depending on the station.  This module processes four of the broadcasts:
+There are several broadcasts being sent depending on the station.  This module processes six of the broadcasts:
 
 * *rapid_wind* - This contains current wind speed and bearing, and is updated every 3 seconds
 * *obs_air* - Here we get Temperature, Humidity, Pressure and Lightning Strikes. This sends out data every minute
 * *obs_sky* - This is where we get Precipitation, Wind, Illuminance and UV. Also broadcasts every minute.
 * *obs_st*  - This is for the new Tempest all in one weather station and combines the air/sky data into a single message sent out every minute.<br>
 Note: The Tempest unit will return the battery voltage in both the skybattery and airbattery sensors. 
+* *evt_strike* - Realtime event for a lightnight strike.
+* *evt_precip* - Realtime event for precipitation starting.
 
 The function is built specifically to be used with [Home Assistant](https://www.home-assistant.io/), so data is formatted to suit that. But it might easily be modified for other purposes.
 
