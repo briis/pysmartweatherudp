@@ -17,11 +17,29 @@ def getDataSet(data, units, ignore_errors=False):
             return AirOberservation(jsondata['obs'][0], units)
         elif jsondata['type'] == 'obs_st':
             return StObservation(jsondata['obs'][0], units)
+        elif jsondata['type'] == 'evt_strike':
+            return LightningEvent(jsondata['evt'])
+        elif jsondata['type'] == 'evt_precip':
+            return PrecipitationEvent(jsondata['evt'])
         else:
             return None
     except:
         if not ignore_errors:
             raise
+
+class LightningEvent:
+    """ Return the Lightnight Strike event. """
+    def __init__(self, data):
+        self.event = 'strike'
+        self.timestamp = data[0]
+        self.distance_km = data[1]
+        self.energy = data[2]
+
+class PrecipitationEvent:
+    """ Return the Precipitation Starting event. """
+    def __init__(self, data):
+        self.event = 'precip'
+        self.timestamp = data[0]
 
 class StObservation:
     """ Return the Combined Station data Structure. """
